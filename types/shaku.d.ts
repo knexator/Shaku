@@ -96,13 +96,21 @@ declare class Shaku {
             linesIndexBuffer: any;
         };
         _fb: any;
-        builtinEffects: {};
+        builtinEffects: {
+            Basic: typeof import("./gfx/effects/effect");
+            MsdfFont: typeof import("./gfx/effects/effect");
+        };
         meshes: {};
         defaultTextureFilter: string;
         defaultTextureWrapMode: string;
         whiteTexture: import("./assets/texture_asset");
         _renderTarget: import("./assets/texture_asset");
         _viewport: import("./utils/rectangle");
+        /**
+         * Method to select managers to use + initialize them.
+         * @param {Array<IManager>=} managers Array with list of managers to use or null to use all.
+         * @returns {Promise} promise to resolve when finish initialization.
+         */
         _drawCallsCount: number;
         _drawQuadsCount: number;
         spritesBatch: import("./gfx/sprite_batch");

@@ -32,7 +32,15 @@ declare class Gfx extends IManager {
         linesIndexBuffer: any;
     };
     _fb: any;
-    builtinEffects: {};
+    /**
+     * Built in Effects.
+     * @type {{Basic: Effect, MsdfFont: Effect}
+     * @public
+     */
+    public builtinEffects: {
+        Basic: typeof import("./effects/effect.js");
+        MsdfFont: typeof import("./effects/effect.js");
+    };
     meshes: {};
     defaultTextureFilter: string;
     defaultTextureWrapMode: string;

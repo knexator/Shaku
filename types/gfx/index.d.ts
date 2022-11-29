@@ -24,7 +24,10 @@ declare const _exports: {
         linesIndexBuffer: any;
     };
     _fb: any;
-    builtinEffects: {};
+    builtinEffects: {
+        Basic: typeof import("./effects/effect");
+        MsdfFont: typeof import("./effects/effect");
+    };
     meshes: {};
     defaultTextureFilter: string;
     defaultTextureWrapMode: string;

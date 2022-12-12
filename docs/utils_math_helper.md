@@ -25,6 +25,7 @@ Implement some math utilities functions.
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
     * [.wrapDegrees(degrees)](#MathHelper.wrapDegrees) ⇒ <code>Number</code>
+    * [.mod(value, m)](#MathHelper.mod) ⇒ <code>Number</code>
 
 <a name="MathHelper.PI2"></a>
 
@@ -191,4 +192,17 @@ Wrap degrees value to be between 0 to 360.
 | Param | Type | Description |
 | --- | --- | --- |
 | degrees | <code>Number</code> | Degrees to wrap. |
+
+<a name="MathHelper.mod"></a>
+
+### MathHelper.mod(value, m) ⇒ <code>Number</code>
+Modulo operation (%) which always returns a positive (or zero) value.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - value wrapped to be between 0 and m-1, both inclusive  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Value to wrap. |
+| m | <code>Number</code> | Modulo to wrap around. |
 

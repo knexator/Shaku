@@ -1220,7 +1220,6 @@ const Rectangle = require("../utils/rectangle");
 const TextureAsset = require("./texture_asset");
 const FontTextureAsset = require('./font_texture_asset')
 const JsonAsset = require('./json_asset')
-const TextureFilterModes = require('../gfx/texture_filter_modes')
 
 
 /**
@@ -1263,7 +1262,7 @@ class MsdfFontTextureAsset extends FontTextureAsset
             await Promise.all([atlas_json.load(), atlas_texture.load()]);
 
             let atlas_metadata = atlas_json.data;
-            atlas_texture.filter = TextureFilterModes.Linear;
+            atlas_texture.filter = "LINEAR";
 
             if (atlas_metadata.common.pages > 1) {
                 throw new Error("Can't use MSDF font with several pages");
@@ -1328,7 +1327,7 @@ class MsdfFontTextureAsset extends FontTextureAsset
 
 // export the asset type.
 module.exports = MsdfFontTextureAsset;
-},{"../gfx/texture_filter_modes":37,"../utils/rectangle":60,"../utils/vector2":66,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
+},{"../utils/rectangle":60,"../utils/vector2":66,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
 /**
  * Implement sound asset type.
  * 
@@ -4657,6 +4656,11 @@ class Gfx extends IManager
         this._currIndices = null;
         this._dynamicBuffers = null;
         this._fb = null;
+        /**
+         * Built in Effects.
+         * @type {{Basic: Effect, MsdfFont: Effect}
+         * @public
+         */
         this.builtinEffects = {};
         this.meshes = {};
         this.defaultTextureFilter = TextureFilterModes.Nearest;
@@ -8573,6 +8577,13 @@ class Input extends IManager
         // get event in a cross-browser way
         event = this._getEvent(event);
 
+        if (document.pointerLockElement !== null) {
+            // Mouse locked, for FPS games
+            this._mousePos.x += event.movementX;
+            this._mousePos.y += event.movementY;
+            return;
+        }
+
         // try to get position from event with some fallbacks
         var pageX = event.clientX; 
         if (pageX === undefined) { pageX = event.x; } 
@@ -9945,6 +9956,11 @@ module.exports = new Shaku();
 'use strict';
 const _autoAnimators = [];
 
+/**
+ * @typedef easingFunction
+ * @param  {number} t - Time in 0-1
+ * @returns {number} New time in 0-1
+ */
 
 /**
  * Implement an animator object that change values over time using Linear Interpolation.
@@ -9963,6 +9979,7 @@ class Animator
         this._fromValues = {};
         this._toValues = {};
         this._progress = 0;
+        this._onUpdate = null;
         this._onFinish = null;
         this._smoothDamp = false;
         this._repeats = false;
@@ -9971,6 +9988,7 @@ class Animator
         this._originalFrom = null;
         this._originalTo = null;
         this._originalRepeats = null;
+        this._easing = linearEasing;
 
         /**
          * Speed factor to multiply with delta every time this animator updates.
@@ -9993,6 +10011,10 @@ class Animator
         delta *= this.speedFactor;
         this._progress += delta;
 
+        if (this._progress < 0) {
+            return;
+        }
+
         // did finish?
         if (this._progress >= 1) { 
 
@@ -10004,6 +10026,9 @@ class Animator
                 this._onFinish();
             }
         }
+
+        // get lerp factor
+        let lerp_factor = this._easing(this._progress);
 
         // update values
         for (let key in this._toValues) {
@@ -10033,16 +10058,13 @@ class Animator
                 fromValue = toValue();
             }
 
-            // get lerp factor
-            let a = (this._smoothDamp && this._progress < 1) ? (this._progress * (1 + 1 - this._progress)) : this._progress;
-
             // calculate new value
             let newValue = null;
             if (typeof fromValue === 'number') {
-                newValue = lerp(fromValue, toValue, a);
+                newValue = lerp(fromValue, toValue, lerp_factor);
             }
             else if (fromValue.constructor.lerp) {
-                newValue = fromValue.constructor.lerp(fromValue, toValue, a);
+                newValue = fromValue.constructor.lerp(fromValue, toValue, lerp_factor);
             }
             else {
                 throw new Error(`Animator issue: from-value for key '${key}' is not a number, and its class type don't implement a 'lerp()' method!`);
@@ -10050,6 +10072,11 @@ class Animator
 
             // set new value
             this._setValueToTarget(keyParts, newValue);
+        }
+
+        // trigger update listener
+        if (this._onUpdate) {
+            this._onUpdate(lerp_factor);
         }
 
         // if repeating, reset progress
@@ -10108,6 +10135,17 @@ class Animator
     }
 
     /**
+     * Set a method to run every frame.
+     * @param {Function} callback Callback to invoke every frame.
+     * @returns {Animator} this.
+     */
+    onUpdate(callback)
+    {
+        this._onUpdate = callback;
+        return this;
+    }
+
+    /**
      * Set a method to run when animation ends.
      * @param {Function} callback Callback to invoke when done.
      * @returns {Animator} this.
@@ -10115,6 +10153,24 @@ class Animator
     then(callback)
     {
         this._onFinish = callback;
+        return this;
+    }
+
+    /**
+     * Add an initial delay.
+     * @param {Number} value Seconds to delay this animator by.
+     */
+    delay(value) {
+        this._progress = -value;
+        return this;
+    }
+
+    /**
+     * Set an arbitrary easing function.
+     * @param {easingFunction} easing - the easing function to use.
+     */
+    easing(easing) {
+        this._easing = easing;
         return this;
     }
     
@@ -10126,7 +10182,7 @@ class Animator
      */
     smoothDamp(enable)
     {
-        this._smoothDamp = enable;
+        this.easing(enable ? smoothDampEasing : lerp);
         return this;
     }
         
@@ -10275,6 +10331,13 @@ function lerp(start, end, amt) {
     return (1-amt)*start + amt*end;
 }
 
+function linearEasing(t) {
+    return t;
+}
+
+function smoothDampEasing(t) {
+    return t * t;
+}
 
 // export the animator class.
 module.exports = Animator;
@@ -11373,9 +11436,17 @@ class MathHelper
      */
     static wrapDegrees(degrees)
     {
-        degrees = degrees % 360;
-        if (degrees < 0) { degrees += 360; }
-        return degrees;
+        return MathHelper.mod(degrees, 360);
+    }
+
+    /**
+     * Modulo operation (%) which always returns a positive (or zero) value.
+     * @param {Number} value Value to wrap.
+     * @param {Number} m Modulo to wrap around.
+     * @returns {Number} value wrapped to be between 0 and m-1, both inclusive
+     */
+    static mod(value, m) {
+        return ((value % m) + m) % m;
     }
 }
 
@@ -11735,8 +11806,8 @@ class Perlin
      * Generate a perlin noise value for x,y coordinates.
      * @param {Number} x X coordinate to generate perlin noise for.
      * @param {Number} y Y coordinate to generate perlin noise for. 
-     * @param {Number} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
-     * @param {Number} contrast Optional contrast factor.
+     * @param {Number=} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
+     * @param {Number=} contrast Optional contrast factor.
      * @returns {Number} Perlin noise value for given point.
      */
     generateSmooth(x, y, blurDistance, contrast) 
@@ -11755,7 +11826,7 @@ class Perlin
      * Generate a perlin noise value for x,y coordinates.
      * @param {Number} x X coordinate to generate perlin noise for.
      * @param {Number} y Y coordinate to generate perlin noise for. 
-     * @param {Number} contrast Optional contrast factor.
+     * @param {Number=} contrast Optional contrast factor.
      * @returns {Number} Perlin noise value for given point, ranged from 0 to 1.
      */
     generate(x, y, contrast) 
@@ -14034,9 +14105,7 @@ class Vector2
      */
     static degreesBetween(P1, P2) 
     {
-        let deltaY = P2.y - P1.y,
-        deltaX = P2.x - P1.x;
-        return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        return MathHelper.toDegrees(Vector2.radiansBetween(P1, P2));
     };
 
     /**
@@ -14048,7 +14117,7 @@ class Vector2
      */
     static radiansBetween(P1, P2) 
     {
-        return MathHelper.toRadians(Vector2.degreesBetween(P1, P2));
+        return Math.atan2(Vector2.cross(P1, P2), Vector2.dot(P1, P2));        
     };
     
     /**
@@ -14060,8 +14129,7 @@ class Vector2
      */
     static degreesBetweenFull(P1, P2) 
     {
-        let temp = P2.sub(P1);
-        return temp.getDegrees();
+        return MathHelper.toDegrees(Vector2.radiansBetweenFull(P1, P2));
     };
 
     /**
@@ -14094,7 +14162,7 @@ class Vector2
      */
     static radiansBetweenFull(P1, P2) 
     {
-        return MathHelper.toRadians(Vector2.degreesBetweenFull(P1, P2));
+        return MathHelper.mod(Vector2.radiansBetween(P1, P2), Math.PI * 2)
     };
 
     /**

@@ -91,6 +91,13 @@ declare class MathHelper {
      * @returns {Number} degrees wrapped to be 0-360 values.
      */
     static wrapDegrees(degrees: number): number;
+    /**
+     * Modulo operation (%) which always returns a positive (or zero) value.
+     * @param {Number} value Value to wrap.
+     * @param {Number} m Modulo to wrap around.
+     * @returns {Number} value wrapped to be between 0 and m-1, both inclusive
+     */
+    static mod(value: number, m: number): number;
 }
 declare namespace MathHelper {
     const PI2: number;

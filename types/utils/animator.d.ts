@@ -1,5 +1,10 @@
 export = Animator;
 /**
+ * @typedef easingFunction
+ * @param  {number} t - Time in 0-1
+ * @returns {number} New time in 0-1
+ */
+/**
  * Implement an animator object that change values over time using Linear Interpolation.
  * Usage example:
  * (new Animator(sprite)).from({'position.x': 0}).to({'position.x': 100}).duration(1).play();
@@ -20,6 +25,7 @@ declare class Animator {
     _fromValues: {};
     _toValues: {};
     _progress: number;
+    _onUpdate: Function;
     _onFinish: Function;
     _smoothDamp: boolean;
     _repeats: boolean;
@@ -28,6 +34,7 @@ declare class Animator {
     _originalFrom: {};
     _originalTo: {};
     _originalRepeats: number | boolean;
+    _easing: typeof linearEasing;
     /**
      * Speed factor to multiply with delta every time this animator updates.
      */
@@ -55,11 +62,27 @@ declare class Animator {
      */
     private _validateValueType;
     /**
+     * Set a method to run every frame.
+     * @param {Function} callback Callback to invoke every frame.
+     * @returns {Animator} this.
+     */
+    onUpdate(callback: Function): Animator;
+    /**
      * Set a method to run when animation ends.
      * @param {Function} callback Callback to invoke when done.
      * @returns {Animator} this.
      */
     then(callback: Function): Animator;
+    /**
+     * Add an initial delay.
+     * @param {Number} value Seconds to delay this animator by.
+     */
+    delay(value: number): this;
+    /**
+     * Set an arbitrary easing function.
+     * @param {easingFunction} easing - the easing function to use.
+     */
+    easing(easing: any): this;
     /**
      * Set smooth damp.
      * If true, lerping will go slower as the animation reach its ending.
@@ -116,4 +139,9 @@ declare class Animator {
      */
     get ended(): boolean;
 }
+declare namespace Animator {
+    export { easingFunction };
+}
+declare function linearEasing(t: any): any;
+type easingFunction = any;
 //# sourceMappingURL=animator.d.ts.map

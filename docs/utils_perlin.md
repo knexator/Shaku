@@ -16,8 +16,8 @@ https://github.com/josephg/noisejs/blob/master/perlin.js
 * [Perlin](#Perlin)
     * [new Perlin(seed)](#new_Perlin_new)
     * [.seed(seed)](#Perlin+seed)
-    * [.generateSmooth(x, y, blurDistance, contrast)](#Perlin+generateSmooth) ⇒ <code>Number</code>
-    * [.generate(x, y, contrast)](#Perlin+generate) ⇒ <code>Number</code>
+    * [.generateSmooth(x, y, [blurDistance], [contrast])](#Perlin+generateSmooth) ⇒ <code>Number</code>
+    * [.generate(x, y, [contrast])](#Perlin+generate) ⇒ <code>Number</code>
 
 <a name="new_Perlin_new"></a>
 
@@ -42,7 +42,7 @@ Set the perlin noise seed.
 
 <a name="Perlin+generateSmooth"></a>
 
-### perlin.generateSmooth(x, y, blurDistance, contrast) ⇒ <code>Number</code>
+### perlin.generateSmooth(x, y, [blurDistance], [contrast]) ⇒ <code>Number</code>
 Generate a perlin noise value for x,y coordinates.
 
 **Kind**: instance method of [<code>Perlin</code>](#Perlin)  
@@ -52,12 +52,12 @@ Generate a perlin noise value for x,y coordinates.
 | --- | --- | --- |
 | x | <code>Number</code> | X coordinate to generate perlin noise for. |
 | y | <code>Number</code> | Y coordinate to generate perlin noise for. |
-| blurDistance | <code>Number</code> | Distance to take neighbors to blur returned value with. Defaults to 0.25. |
-| contrast | <code>Number</code> | Optional contrast factor. |
+| [blurDistance] | <code>Number</code> | Distance to take neighbors to blur returned value with. Defaults to 0.25. |
+| [contrast] | <code>Number</code> | Optional contrast factor. |
 
 <a name="Perlin+generate"></a>
 
-### perlin.generate(x, y, contrast) ⇒ <code>Number</code>
+### perlin.generate(x, y, [contrast]) ⇒ <code>Number</code>
 Generate a perlin noise value for x,y coordinates.
 
 **Kind**: instance method of [<code>Perlin</code>](#Perlin)  
@@ -67,5 +67,5 @@ Generate a perlin noise value for x,y coordinates.
 | --- | --- | --- |
 | x | <code>Number</code> | X coordinate to generate perlin noise for. |
 | y | <code>Number</code> | Y coordinate to generate perlin noise for. |
-| contrast | <code>Number</code> | Optional contrast factor. |
+| [contrast] | <code>Number</code> | Optional contrast factor. |
 

@@ -4,6 +4,23 @@
 
 # Animator
 
+## Classes
+
+<dl>
+<dt><a href="#Animator">Animator</a></dt>
+<dd><p>Implement an animator object that change values over time using Linear Interpolation.
+Usage example:
+(new Animator(sprite)).from({&#39;position.x&#39;: 0}).to({&#39;position.x&#39;: 100}).duration(1).play();</p>
+</dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#easingFunction">easingFunction</a> ⇒ <code>number</code></dt>
+<dd></dd>
+</dl>
+
 <a name="Animator"></a>
 
 ## Animator
@@ -18,7 +35,10 @@ Usage example:
     * [.speedFactor](#Animator+speedFactor)
     * [.ended](#Animator+ended) ⇒ <code>Boolean</code>
     * [.update(delta)](#Animator+update)
+    * [.onUpdate(callback)](#Animator+onUpdate) ⇒ [<code>Animator</code>](#Animator)
     * [.then(callback)](#Animator+then) ⇒ [<code>Animator</code>](#Animator)
+    * [.delay(value)](#Animator+delay)
+    * [.easing(easing)](#Animator+easing)
     * [.smoothDamp(enable)](#Animator+smoothDamp) ⇒ [<code>Animator</code>](#Animator)
     * [.repeats(enable, reverseAnimation)](#Animator+repeats) ⇒ [<code>Animator</code>](#Animator)
     * [.from(values)](#Animator+from) ⇒ [<code>Animator</code>](#Animator)
@@ -62,6 +82,18 @@ Update this animator with a given delta time.
 | --- | --- | --- |
 | delta | <code>Number</code> | Delta time to progress this animator by. |
 
+<a name="Animator+onUpdate"></a>
+
+### animator.onUpdate(callback) ⇒ [<code>Animator</code>](#Animator)
+Set a method to run every frame.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke every frame. |
+
 <a name="Animator+then"></a>
 
 ### animator.then(callback) ⇒ [<code>Animator</code>](#Animator)
@@ -73,6 +105,28 @@ Set a method to run when animation ends.
 | Param | Type | Description |
 | --- | --- | --- |
 | callback | <code>function</code> | Callback to invoke when done. |
+
+<a name="Animator+delay"></a>
+
+### animator.delay(value)
+Add an initial delay.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Seconds to delay this animator by. |
+
+<a name="Animator+easing"></a>
+
+### animator.easing(easing)
+Set an arbitrary easing function.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| easing | [<code>easingFunction</code>](#easingFunction) | the easing function to use. |
 
 <a name="Animator+smoothDamp"></a>
 
@@ -158,3 +212,13 @@ Make this Animator update automatically with the gameTime delta time, until its 
 
 **Kind**: instance method of [<code>Animator</code>](#Animator)  
 **Returns**: [<code>Animator</code>](#Animator) - this.  
+<a name="easingFunction"></a>
+
+## easingFunction ⇒ <code>number</code>
+**Kind**: global typedef  
+**Returns**: <code>number</code> - New time in 0-1  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| t | <code>number</code> | Time in 0-1 |
+

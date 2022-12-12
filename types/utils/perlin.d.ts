@@ -21,18 +21,18 @@ declare class Perlin {
      * Generate a perlin noise value for x,y coordinates.
      * @param {Number} x X coordinate to generate perlin noise for.
      * @param {Number} y Y coordinate to generate perlin noise for.
-     * @param {Number} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
-     * @param {Number} contrast Optional contrast factor.
+     * @param {Number=} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
+     * @param {Number=} contrast Optional contrast factor.
      * @returns {Number} Perlin noise value for given point.
      */
-    generateSmooth(x: number, y: number, blurDistance: number, contrast: number): number;
+    generateSmooth(x: number, y: number, blurDistance?: number | undefined, contrast?: number | undefined): number;
     /**
      * Generate a perlin noise value for x,y coordinates.
      * @param {Number} x X coordinate to generate perlin noise for.
      * @param {Number} y Y coordinate to generate perlin noise for.
-     * @param {Number} contrast Optional contrast factor.
+     * @param {Number=} contrast Optional contrast factor.
      * @returns {Number} Perlin noise value for given point, ranged from 0 to 1.
      */
-    generate(x: number, y: number, contrast: number): number;
+    generate(x: number, y: number, contrast?: number | undefined): number;
 }
 //# sourceMappingURL=perlin.d.ts.map

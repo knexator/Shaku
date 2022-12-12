@@ -16,6 +16,7 @@ To access the Graphics manager you use `Shaku.gfx`.
 
 * [Gfx](#Gfx)
     * [new Gfx()](#new_Gfx_new)
+    * [.builtinEffects](#Gfx+builtinEffects)
     * [.canvas](#Gfx+canvas) ⇒ <code>HTMLCanvasElement</code>
     * [.Effect](#Gfx+Effect)
     * [.BasicEffect](#Gfx+BasicEffect)
@@ -73,6 +74,13 @@ To access the Graphics manager you use `Shaku.gfx`.
 ### new Gfx()
 Create the manager.
 
+<a name="Gfx+builtinEffects"></a>
+
+### gfx.builtinEffects
+Built in Effects.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Access**: public  
 <a name="Gfx+canvas"></a>
 
 ### gfx.canvas ⇒ <code>HTMLCanvasElement</code>
